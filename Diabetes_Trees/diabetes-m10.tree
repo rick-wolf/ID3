@@ -1,0 +1,141 @@
+
+plas <= 127.500000 [342 78]
+|       age <= 28.500000 [220 20]
+|       |       mass <= 31.400000 [130 2]
+|       |       |       preg <= 7.000000 [130 1]
+|       |       |       |       pedi <= 0.672000 [111 0]: tested_negative
+|       |       |       |       pedi > 0.672000 [19 1]
+|       |       |       |       |       pedi <= 0.686500 [0 1]: tested_positive
+|       |       |       |       |       pedi > 0.686500 [19 0]: tested_negative
+|       |       |       preg > 7.000000 [0 1]: tested_positive
+|       |       mass > 31.400000 [90 18]
+|       |       |       pres <= 37.000000 [0 2]: tested_positive
+|       |       |       pres > 37.000000 [90 16]
+|       |       |       |       pedi <= 0.509500 [62 6]
+|       |       |       |       |       mass <= 45.400000 [62 4]
+|       |       |       |       |       |       insu <= 38.000000 [17 4]
+|       |       |       |       |       |       |       plas <= 94.000000 [8 0]: tested_negative
+|       |       |       |       |       |       |       plas > 94.000000 [9 4]
+|       |       |       |       |       |       |       |       age <= 25.500000 [5 4]: tested_negative
+|       |       |       |       |       |       |       |       age > 25.500000 [4 0]: tested_negative
+|       |       |       |       |       |       insu > 38.000000 [45 0]: tested_negative
+|       |       |       |       |       mass > 45.400000 [0 2]: tested_positive
+|       |       |       |       pedi > 0.509500 [28 10]
+|       |       |       |       |       pres <= 64.500000 [9 7]
+|       |       |       |       |       |       plas <= 88.500000 [4 0]: tested_negative
+|       |       |       |       |       |       plas > 88.500000 [5 7]
+|       |       |       |       |       |       |       mass <= 34.850000 [0 4]: tested_positive
+|       |       |       |       |       |       |       mass > 34.850000 [5 3]: tested_negative
+|       |       |       |       |       pres > 64.500000 [19 3]
+|       |       |       |       |       |       pres <= 79.000000 [13 0]: tested_negative
+|       |       |       |       |       |       pres > 79.000000 [6 3]: tested_negative
+|       age > 28.500000 [122 58]
+|       |       mass <= 26.350000 [34 1]
+|       |       |       mass <= 9.650000 [0 1]: tested_positive
+|       |       |       mass > 9.650000 [34 0]: tested_negative
+|       |       mass > 26.350000 [88 57]
+|       |       |       pedi <= 0.625000 [75 32]
+|       |       |       |       plas <= 93.500000 [26 2]
+|       |       |       |       |       plas <= 28.500000 [0 1]: tested_positive
+|       |       |       |       |       plas > 28.500000 [26 1]
+|       |       |       |       |       |       preg <= 11.500000 [24 0]: tested_negative
+|       |       |       |       |       |       preg > 11.500000 [2 1]: tested_negative
+|       |       |       |       plas > 93.500000 [49 30]
+|       |       |       |       |       skin <= 27.500000 [23 24]
+|       |       |       |       |       |       pres <= 84.000000 [15 23]
+|       |       |       |       |       |       |       pedi <= 0.468000 [12 23]
+|       |       |       |       |       |       |       |       age <= 56.000000 [10 23]
+|       |       |       |       |       |       |       |       |       mass <= 27.950000 [0 5]: tested_positive
+|       |       |       |       |       |       |       |       |       mass > 27.950000 [10 18]
+|       |       |       |       |       |       |       |       |       |       mass <= 29.650000 [4 1]: tested_negative
+|       |       |       |       |       |       |       |       |       |       mass > 29.650000 [6 17]
+|       |       |       |       |       |       |       |       |       |       |       preg <= 7.000000 [2 13]
+|       |       |       |       |       |       |       |       |       |       |       |       age <= 33.000000 [2 2]: tested_negative
+|       |       |       |       |       |       |       |       |       |       |       |       age > 33.000000 [0 11]: tested_positive
+|       |       |       |       |       |       |       |       |       |       |       preg > 7.000000 [4 4]: tested_negative
+|       |       |       |       |       |       |       |       age > 56.000000 [2 0]: tested_negative
+|       |       |       |       |       |       |       pedi > 0.468000 [3 0]: tested_negative
+|       |       |       |       |       |       pres > 84.000000 [8 1]: tested_negative
+|       |       |       |       |       skin > 27.500000 [26 6]
+|       |       |       |       |       |       plas <= 104.000000 [12 0]: tested_negative
+|       |       |       |       |       |       plas > 104.000000 [14 6]
+|       |       |       |       |       |       |       pres <= 89.000000 [14 4]
+|       |       |       |       |       |       |       |       mass <= 34.750000 [5 4]: tested_negative
+|       |       |       |       |       |       |       |       mass > 34.750000 [9 0]: tested_negative
+|       |       |       |       |       |       |       pres > 89.000000 [0 2]: tested_positive
+|       |       |       pedi > 0.625000 [13 25]
+|       |       |       |       preg <= 8.500000 [13 18]
+|       |       |       |       |       pedi <= 0.698500 [0 5]: tested_positive
+|       |       |       |       |       pedi > 0.698500 [13 13]
+|       |       |       |       |       |       mass <= 33.100000 [3 8]
+|       |       |       |       |       |       |       preg <= 4.500000 [3 3]: tested_negative
+|       |       |       |       |       |       |       preg > 4.500000 [0 5]: tested_positive
+|       |       |       |       |       |       mass > 33.100000 [10 5]
+|       |       |       |       |       |       |       skin <= 28.000000 [4 0]: tested_negative
+|       |       |       |       |       |       |       skin > 28.000000 [6 5]
+|       |       |       |       |       |       |       |       skin <= 35.500000 [0 2]: tested_positive
+|       |       |       |       |       |       |       |       skin > 35.500000 [6 3]: tested_negative
+|       |       |       |       preg > 8.500000 [0 7]: tested_positive
+plas > 127.500000 [93 155]
+|       mass <= 29.950000 [43 22]
+|       |       plas <= 145.000000 [30 6]
+|       |       |       preg <= 1.500000 [12 0]: tested_negative
+|       |       |       preg > 1.500000 [18 6]
+|       |       |       |       insu <= 132.500000 [13 6]
+|       |       |       |       |       insu <= 69.500000 [13 3]
+|       |       |       |       |       |       pres <= 73.000000 [3 3]: tested_negative
+|       |       |       |       |       |       pres > 73.000000 [10 0]: tested_negative
+|       |       |       |       |       insu > 69.500000 [0 3]: tested_positive
+|       |       |       |       insu > 132.500000 [5 0]: tested_negative
+|       |       plas > 145.000000 [13 16]
+|       |       |       age <= 61.000000 [9 16]
+|       |       |       |       age <= 25.500000 [3 0]: tested_negative
+|       |       |       |       age > 25.500000 [6 16]
+|       |       |       |       |       pres <= 72.000000 [0 8]: tested_positive
+|       |       |       |       |       pres > 72.000000 [6 8]
+|       |       |       |       |       |       mass <= 27.250000 [1 6]: tested_positive
+|       |       |       |       |       |       mass > 27.250000 [5 2]: tested_negative
+|       |       |       age > 61.000000 [4 0]: tested_negative
+|       mass > 29.950000 [50 133]
+|       |       plas <= 157.500000 [39 62]
+|       |       |       pedi <= 0.400500 [26 20]
+|       |       |       |       mass <= 45.550000 [26 14]
+|       |       |       |       |       pres <= 69.000000 [4 7]
+|       |       |       |       |       |       preg <= 1.000000 [0 3]: tested_positive
+|       |       |       |       |       |       preg > 1.000000 [4 4]: tested_negative
+|       |       |       |       |       pres > 69.000000 [22 7]
+|       |       |       |       |       |       pres <= 79.000000 [12 1]
+|       |       |       |       |       |       |       preg <= 0.500000 [2 1]: tested_negative
+|       |       |       |       |       |       |       preg > 0.500000 [10 0]: tested_negative
+|       |       |       |       |       |       pres > 79.000000 [10 6]
+|       |       |       |       |       |       |       skin <= 16.500000 [5 0]: tested_negative
+|       |       |       |       |       |       |       skin > 16.500000 [5 6]
+|       |       |       |       |       |       |       |       mass <= 36.200000 [1 5]: tested_positive
+|       |       |       |       |       |       |       |       mass > 36.200000 [4 1]: tested_negative
+|       |       |       |       mass > 45.550000 [0 6]: tested_positive
+|       |       |       pedi > 0.400500 [13 42]
+|       |       |       |       age <= 30.000000 [11 11]
+|       |       |       |       |       pres <= 73.000000 [3 10]
+|       |       |       |       |       |       skin <= 28.500000 [0 7]: tested_positive
+|       |       |       |       |       |       skin > 28.500000 [3 3]: tested_negative
+|       |       |       |       |       pres > 73.000000 [8 1]: tested_negative
+|       |       |       |       age > 30.000000 [2 31]
+|       |       |       |       |       plas <= 152.500000 [0 27]: tested_positive
+|       |       |       |       |       plas > 152.500000 [2 4]: tested_positive
+|       |       plas > 157.500000 [11 71]
+|       |       |       insu <= 629.500000 [9 71]
+|       |       |       |       age <= 44.500000 [4 56]
+|       |       |       |       |       pedi <= 0.306500 [4 13]
+|       |       |       |       |       |       mass <= 31.400000 [2 0]: tested_negative
+|       |       |       |       |       |       mass > 31.400000 [2 13]
+|       |       |       |       |       |       |       age <= 37.500000 [2 6]: tested_positive
+|       |       |       |       |       |       |       age > 37.500000 [0 7]: tested_positive
+|       |       |       |       |       pedi > 0.306500 [0 43]: tested_positive
+|       |       |       |       age > 44.500000 [5 15]
+|       |       |       |       |       preg <= 7.500000 [5 9]
+|       |       |       |       |       |       pedi <= 1.156500 [3 9]
+|       |       |       |       |       |       |       mass <= 34.450000 [3 3]: tested_negative
+|       |       |       |       |       |       |       mass > 34.450000 [0 6]: tested_positive
+|       |       |       |       |       |       pedi > 1.156500 [2 0]: tested_negative
+|       |       |       |       |       preg > 7.500000 [0 6]: tested_positive
+|       |       |       insu > 629.500000 [2 0]: tested_negative
