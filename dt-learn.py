@@ -8,7 +8,8 @@ that can reach a node before the node is forced to become a leaf.
 Rick Wolf
 """
 
-import sys, math, dataset
+import sys, math
+from Dataset import Dataset
 
 
 
@@ -27,11 +28,44 @@ def main(argv):
 		sys.exit("Bad input: Please provide a test file, train file, and value for m")
 
 
-	# Parse the
+	# Parse the training data
+	attributes = [] # an ordered list of the attribute names
+	attributeValues = {} # a dictionary with attrib name as keys
+	instances = []
+	labels = []
+
+
+	train_arff = open(trainFile, 'r')
+	for line in train_arff:
+		if not (line.startswith("%")):
+			line = line.strip("\n")
+			if (line.startswith("@attribute")):
+				# line is now a list of words
+				line = [word.lstrip("{ '\t").rstrip("} ',\t") for word in line.split() if word != '{']
+				if (line[1] == "class"):
+					labels = line[2:]
+				else:
+					attributes.append(line[1]) # the name will always be the second item
+					attributeValues[line[1]] = line[2:] #the third to end of the list is the values
+			elif  not (line.startswith("@")):
+				line = line.split(',')
+				instances.append(line[:-1])
+				
+
+	dset = Dataset(labels, attributes, attributeValues, instances)
+
+	print(dset.instances[0])
+	print(dset.labels)
+	print(dset.attributes)
+	print(dset.attributeValues)
+    
+
+
+
 
 
 
 
 
 if __name__ == "__main__":
-	main()
+	main(sys.argv[:])
