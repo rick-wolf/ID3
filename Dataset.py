@@ -31,3 +31,8 @@ class Dataset(object):
 		self.attributes = attributes
 		self.attributeValues = attributeValues
 		self.instances = instances
+
+
+
+	
+
