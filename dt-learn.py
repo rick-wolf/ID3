@@ -10,6 +10,8 @@ Rick Wolf
 
 import sys, math
 from Dataset import Dataset
+from DecisionTree import DecisionTree
+from DecTreeNode import DecTreeNode
 
 
 
@@ -62,21 +64,18 @@ def main(argv):
 		sys.exit("Bad input: Please provide a test file, train file, and value for m")
 
 
-	
+	# Ingest the datasets
 	trainset = readFile(trainFile)
-
-	print(trainset.instances[0])
-	print(trainset.labels)
-	print(trainset.attributes)
-	print(trainset.attributeValues)
-
-
 	testset = readFile(testFile)
 
-	print(testset.instances[0])
-	print(testset.labels)
-	print(testset.attributes)
-	print(testset.attributeValues)
+
+	# test decision tree constructor
+	a = DecisionTree(trainset, m)
+
+	print(a.labels)
+	print(a.attributes)
+	print(a.attributeValues)
+	print(a.m)
     
 
 
