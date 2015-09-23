@@ -42,7 +42,8 @@ def readFile(fname):
 						attributeValues[line[1]] = line[2:] #the third to end of the list is the values
 				elif  not (line.startswith("@")):
 					line = line.split(',')
-					instances.append(line[:-1])
+					instances.append(line[:])
+					
 
 
 		return Dataset(labels, attributes, attributeValues, instances)
@@ -72,11 +73,13 @@ def main(argv):
 	# test decision tree constructor
 	a = DecisionTree(trainset, m)
 
-	print(a.labels)
-	print(a.attributes)
-	print(a.attributeValues)
-	print(a.m)
-    
+	#print(a.labels)
+	#print(a.attributes)
+	#print(a.attributeValues)
+	#print(a.m)
+	print(a.root.attribute)
+	print(a.root.terminal)
+	print(a.root.label)
 
 
 

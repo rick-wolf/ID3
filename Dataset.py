@@ -17,14 +17,16 @@ class Dataset(object):
 					values are the lists of possible values each var can take.
 					When an attrib can take real number values, this simply states
 					'real'.
-	instances: a list of instances, where each instance is a list of attribute values
+	instances: a list of instances, where each instance is a list of attribute values,
+				and the last value is the class label
+	classes: a list of classes corresponding to the instances
 
 	Author: Rick Wolf
 	"""
 
 	def __init__(self, labels, attributes, attributeValues, instances):
 		
-		assert len(attributes) == len(instances[0])
+		assert len(attributes) + 1 == len(instances[0])
 		assert len(labels) == 2
 
 		self.labels = labels

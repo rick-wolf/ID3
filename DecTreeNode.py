@@ -26,3 +26,4 @@ class DecTreeNode(object):
 		"""
 
 		self.children.append(child)
+		
