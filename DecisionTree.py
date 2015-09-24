@@ -56,6 +56,26 @@ class DecisionTree(object):
 		instances: the instances involved in deciding this split
 		x: the index of the name of this feature in 
 		"""
+		candidates = []
+
+		# get a sorted list of unique values in the attribute
+		uniqueVals = sorted(list(set(zip(*instances)[x])))
+		
+		# get a dict of instances sorted 
+		valSets = {key:[] for key in uniqueVals}
+		for instance in instances:
+			valSets[instance[x]].append((instance[x],instance[-1]))
+		
+		# determine if midpoints between set values should 
+		# be considered for splits
+		for i in range(len(uniqueVals)-1):
+			sLabels = set(zip(*valSets[uniqueVals[i]])[1])
+			tLabels = set(zip(*valSets[uniqueVals[i+1]])[1])
+			if not (sLabels == tLabels):
+				candidates.append((uniqueVals[i] + uniqueVals[i+1])/float(2))
+
+		return candidates
+
 
 
 
