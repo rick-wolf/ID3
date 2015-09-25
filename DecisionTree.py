@@ -22,12 +22,13 @@ class DecisionTree(object):
 
 
 
-	def buildTree(self, examples, m, parentAttrib=None, parentAttribValue=None):
+	def buildTree(self, examples, m, attributes, parentAttrib=None, parentAttribValue=None):
 		"""
 		recursively builds a decision tree, returning the root node
 
 		examples: instances from the training set (a list of lists)
 		m: the number of instances at which to force a leaf
+		attributes: a list of attributes that can be split on
 		"""
 
 		# get a tuple with the name of the best attribute and its info gain
@@ -51,8 +52,10 @@ class DecisionTree(object):
 
 
 
-	def determineCandidateNumericSplits(self, instances, x):
+	def determineCandidateNumericSplit(self, instances, x):
 		"""
+		returns a tuple that is the (bestSplit, infoGain)
+
 		instances: the instances involved in deciding this split
 		x: the index of the name of this feature in 
 		"""
@@ -71,15 +74,24 @@ class DecisionTree(object):
 		for i in range(len(uniqueVals)-1):
 			sLabels = set(zip(*valSets[uniqueVals[i]])[1])
 			tLabels = set(zip(*valSets[uniqueVals[i+1]])[1])
-			if not (sLabels == tLabels):
+			# if there exists a pair of instances with different labels between the two sets
+			if (len(sLabels) == 2 or len(tLabels) == 2 or not(sLabels == tLabels)):
 				candidates.append((uniqueVals[i] + uniqueVals[i+1])/float(2))
 
-		return candidates
+		# decide which candidate has the best info gain
+		bestGain = float("-inf")
+		bestCand = None
+		for candidate in candidates:
+			candGain = self.getEntropy(instances) - self.getCondEntropyNumeric(instances, x, candidate)
+			if candGain > bestGain:
+				bestGain = candGain
+				bestCand = candidate
+		return (candidate, candGain)
 
 
 
 
-	def bestAttribAndGain(self, instances):
+	def bestAttribAndGain(self, instances, attributes):
 		"""
 		returns a tuple that names the attribute with the best info gain,
 		and how much info gain that is.
@@ -87,9 +99,44 @@ class DecisionTree(object):
 		best = ("none", float("-inf"))
 
 
+
 	def getProbOfLabel(self, instances, label):
 		count = sum([1 if instance[-1] == label else 0 for instance in instances])
 		return float(count) / len(instances)
+
+	
+	def getCondEntropyNumeric(self, instances, attribute, split):
+		"""
+		Gets conditional entropy of a candidate numeric split
+		"""
+		# find instances that are less than or equal to the split
+		x = self.attributes.index(attribute)
+		lteInstances = [instance for instance in instances if instances[x] <= split]
+		gtInstances = [instance for instance in instances if instances[x] > split]
+
+		# calculate conditional entropy
+		return ((len(lteInstances)/len(instances))*self.getEntropy(lteInstances)) + \
+		((len(gtInstances)/len(instances))*self.getEntropy(gtInstances))
+
+
+
+	def getCondEntropyNominal(self, instances, attribute):
+		"""
+		Gets conditional entropy of a nominal attribute
+		"""
+		xInd = self.attributes.index(attribute)
+		valList = self.attributeValues[attribute]
+
+		entSum = 0
+
+		for val in valList:
+			valExamples = [instance for instance in instances if instance[xInd] == val]
+			entSum += (len(valExamples)/len(instances)) * self.getEntropy(instances)
+
+		return entSum
+
+
+
 
 
 	def getEntropy(self, instances):
