@@ -52,13 +52,14 @@ class DecisionTree(object):
 
 
 
-	def determineCandidateNumericSplit(self, instances, x):
+	def determineCandidateNumericSplit(self, instances, attribute):
 		"""
 		returns a tuple that is the (bestSplit, infoGain)
 
 		instances: the instances involved in deciding this split
-		x: the index of the name of this feature in 
+		attribute: the string name of the attribute
 		"""
+		x = self.attributes.index(attribute)
 		candidates = []
 
 		# get a sorted list of unique values in the attribute
@@ -94,9 +95,27 @@ class DecisionTree(object):
 	def bestAttribAndGain(self, instances, attributes):
 		"""
 		returns a tuple that names the attribute with the best info gain,
-		and how much info gain that is.
+		and how much info gain that is. If the attribute is numeric,
+		the tuple has a 3rd field defining the split point
 		"""
 		best = ("none", float("-inf"))
+
+		# loop through each attribute and get best info gain
+		for attribute in attributes:
+			# if the attribute is nominal
+			if len(self.attributeValues[attribute] > 1):
+				newGain = self.getEntropy(instances) - self.getCondEntropyNominal(instances, attribute)
+				if newGain > best[1]:
+					best = (attribute, newGain)
+			# if the attribute is numeric
+			else:
+				# get a tuple with a (splitCandidate, infoGain)
+				candSplitGain = self.determineCandidateNumericSplit(instances, attribute)
+				if candSplitGain[1] > best[1]:
+					best = (attribute, candSplitGain[1], candSplitGain[0])
+
+		return best
+
 
 
 
