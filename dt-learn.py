@@ -42,7 +42,14 @@ def readFile(fname):
 						attributeValues[line[1]] = line[2:] #the third to end of the list is the values
 				elif  not (line.startswith("@")):
 					line = line.split(',')
-					instances.append(line[:])
+					newline = []
+					for i in range(len(attributes)):
+						if len(attributeValues[attributes[i]]) == 1:
+							newline.append(float(line[i]))
+						else:
+							newline.append(line[i])
+					newline.append(line[-1])
+					instances.append(newline[:])
 					
 
 
@@ -60,7 +67,7 @@ def main(argv):
 	if len(sys.argv) == 4:
 		trainFile = sys.argv[1]
 		testFile  = sys.argv[2]
-		m = sys.argv[3]
+		m = float(sys.argv[3])
 	else:
 		sys.exit("Bad input: Please provide a test file, train file, and value for m")
 
@@ -71,15 +78,14 @@ def main(argv):
 
 
 	# test decision tree constructor
+	print m
 	a = DecisionTree(trainset, m)
 
-	#print(a.labels)
+	
 	#print(a.attributes)
 	#print(a.attributeValues)
 	#print(a.m)
-	print(a.root.attribute)
-	print(a.root.terminal)
-	print(a.root.label)
+	print(a.root.children)
 
 
 

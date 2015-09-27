@@ -1,7 +1,7 @@
 
 import math
 from Dataset import Dataset
-from DecTreeNode import DecTreeNode
+from DecTreeNode import *
 
 
 class DecisionTree(object):
@@ -18,7 +18,7 @@ class DecisionTree(object):
 		self.attributeValues = train.attributeValues
 		self.m = m
 
-		self.root = self.buildTree(train.instances, m)
+		self.root = self.buildTree(train.instances, m, self.attributes, '', '')
 
 
 
@@ -31,21 +31,57 @@ class DecisionTree(object):
 		attributes: a list of attributes that can be split on
 		"""
 
-		# get a tuple with the name of the best attribute and its info gain
-		splitAndGain = self.bestAttribAndGain(examples)
+		# get a tuple with the name of the best attribute and its info gain,
+		#    and the split if the feature is numeric
+		bestGain = self.bestAttribAndGain(examples, attributes)
+		print bestGain
 
 		# test if this should be a leaf node
 		#   are the remaining training instances homogeneous?
 		if (self.isHomogeneousSet(examples)):
-			return DecTreeNode(parentAttrib, parentAttribValue, True, [], examples[-1])
-		#   are there fewer than m instances?
-		if (len(examples) < m):
+			print "here"
+			return DecTreeNode(parentAttrib, parentAttribValue, True, [], examples[0][-1])
+		#   are there fewer than m instances? OR
+		#   do all remaining features have negative information gain?
+		if len(examples) < m:
+			print "here2"
+			print(m)
+			print(len(examples))
+			print(len(examples)>m)
+			print(bestGain[1])
 			return DecTreeNode(parentAttrib, parentAttribValue, True, [], 
 				self.getMajorityLabel(examples))
+		if  (bestGain[1] < 0):
+			print "here3"
+			print(len(examples))
+			print(bestGain[1])
+			return DecTreeNode(parentAttrib, parentAttribValue, True, [], 
+				self.getMajorityLabel(examples))
+		#   are there only numeric features with no candidate splits?
+		#      this should implicitly be checked when looking for bestGain
+		#   (if there aren't more splits, best gain returns as -inf)
 
-		#   do all remaining features have negative information gain?
-
-		#   are there no more remaining candidate splits?
+		# If we've gotten this far, we're making an internal node
+		subAttribs = list(attributes) # copy the list
+		xInd = self.attributes.index(bestGain[0])
+		subtree = DecTreeNode(parentAttrib, parentAttribValue, False, [])
+		# remove the current attrib from the list of attribs if its nominal
+		if len(bestGain) == 2:
+			subAttribs.remove(bestGain[0])
+			# make an internal node with a nominal attribute
+			# make branches for each value of the attribute
+			for val in self.attributeValues[bestGain[0]]:
+				exOfVal = [instance for instance in examples if instance[xInd] == val]
+				subtree.addChild(self.buildTree(exOfVal, m, subAttribs, bestGain[0], val))
+		else:
+			# make an internal node with a numeric attribute
+			# first do the less than or equal to
+			exLess = [instance for instance in examples if instance[xInd] <= bestGain[2]]
+			subtree.addChild(self.buildTree(exLess, m, subAttribs, bestGain[0], ' <= %.6f' % bestGain[2]))
+			exGrtr = [instance for instance in examples if instance[xInd] > bestGain[2]]
+			subtree.addChild(self.buildTree(exGrtr, m, subAttribs, bestGain[0], ' <= %.6f' % bestGain[2]))
+		
+		return subtree
 
 
 
@@ -72,22 +108,24 @@ class DecisionTree(object):
 		
 		# determine if midpoints between set values should 
 		# be considered for splits
-		for i in range(len(uniqueVals)-1):
-			sLabels = set(zip(*valSets[uniqueVals[i]])[1])
-			tLabels = set(zip(*valSets[uniqueVals[i+1]])[1])
-			# if there exists a pair of instances with different labels between the two sets
-			if (len(sLabels) == 2 or len(tLabels) == 2 or not(sLabels == tLabels)):
-				candidates.append((uniqueVals[i] + uniqueVals[i+1])/float(2))
+		if (len(uniqueVals) > 0):
+			for i in range(len(uniqueVals)-1):
+				sLabels = set(zip(*valSets[uniqueVals[i]])[1])
+				tLabels = set(zip(*valSets[uniqueVals[i+1]])[1])
+				# if there exists a pair of instances with different labels between the two sets
+				if (len(sLabels) == 2 or len(tLabels) == 2 or not(sLabels == tLabels)):
+					candidates.append((uniqueVals[i] + uniqueVals[i+1])/float(2))
 
 		# decide which candidate has the best info gain
 		bestGain = float("-inf")
 		bestCand = None
-		for candidate in candidates:
-			candGain = self.getEntropy(instances) - self.getCondEntropyNumeric(instances, x, candidate)
-			if candGain > bestGain:
-				bestGain = candGain
-				bestCand = candidate
-		return (candidate, candGain)
+		if (len(candidates) > 0):
+			for candidate in candidates:
+				candGain = self.getEntropy(instances) - self.getCondEntropyNumeric(instances, attribute, candidate)
+				if candGain > bestGain:
+					bestGain = candGain
+					bestCand = candidate
+		return (bestCand, bestGain)
 
 
 
@@ -98,12 +136,13 @@ class DecisionTree(object):
 		and how much info gain that is. If the attribute is numeric,
 		the tuple has a 3rd field defining the split point
 		"""
-		best = ("none", float("-inf"))
+		best = (None, float("-inf"))
+		
 
 		# loop through each attribute and get best info gain
 		for attribute in attributes:
 			# if the attribute is nominal
-			if len(self.attributeValues[attribute] > 1):
+			if len(self.attributeValues[attribute]) > 1:
 				newGain = self.getEntropy(instances) - self.getCondEntropyNominal(instances, attribute)
 				if newGain > best[1]:
 					best = (attribute, newGain)
@@ -114,6 +153,7 @@ class DecisionTree(object):
 				if candSplitGain[1] > best[1]:
 					best = (attribute, candSplitGain[1], candSplitGain[0])
 
+		print(best)
 		return best
 
 
@@ -121,7 +161,10 @@ class DecisionTree(object):
 
 	def getProbOfLabel(self, instances, label):
 		count = sum([1 if instance[-1] == label else 0 for instance in instances])
-		return float(count) / len(instances)
+		if len(instances) > 0:
+			return float(count) / len(instances)
+		else:
+			return 0
 
 	
 	def getCondEntropyNumeric(self, instances, attribute, split):
@@ -134,8 +177,8 @@ class DecisionTree(object):
 		gtInstances = [instance for instance in instances if instances[x] > split]
 
 		# calculate conditional entropy
-		return ((len(lteInstances)/len(instances))*self.getEntropy(lteInstances)) + \
-		((len(gtInstances)/len(instances))*self.getEntropy(gtInstances))
+		return (((len(lteInstances)/len(instances))*self.getEntropy(lteInstances)) + \
+		((len(gtInstances)/len(instances))*self.getEntropy(gtInstances)))
 
 
 
@@ -150,7 +193,7 @@ class DecisionTree(object):
 
 		for val in valList:
 			valExamples = [instance for instance in instances if instance[xInd] == val]
-			entSum += (len(valExamples)/len(instances)) * self.getEntropy(instances)
+			entSum += (float(len(valExamples))/len(instances)) * self.getEntropy(valExamples)
 
 		return entSum
 
@@ -195,7 +238,13 @@ class DecisionTree(object):
 				counts[0] += 1
 			else:
 				counts[1] += 1
-		return self.labels[counts.index(max(counts))]
+
+		majority = self.labels[0]
+		if (counts[0] == counts[1]):
+			majority = self.labels[0]
+		else:
+			majority = self.labels[counts.index(max(counts))]
+		return majority
 
 
 
