@@ -20,6 +20,8 @@ class DecisionTree(object):
 
 		self.root = self.buildTree(train.instances, m, self.attributes, '', '')
 
+	
+
 
 
 	def buildTree(self, examples, m, attributes, parentAttrib=None, parentAttribValue=None):
@@ -30,6 +32,7 @@ class DecisionTree(object):
 		m: the number of instances at which to force a leaf
 		attributes: a list of attributes that can be split on
 		"""
+		counts = self.getNumOfEachLabel(examples)
 
 		# get a tuple with the name of the best attribute and its info gain,
 		#    and the split if the feature is numeric
@@ -38,17 +41,18 @@ class DecisionTree(object):
 		#   are the remaining training instances homogeneous?
 		if len(examples) == 0:
 			return DecTreeNode(parentAttrib, parentAttribValue, True, [], 
-				self.labels[0])
+				self.labels[0], numNeg=counts[0], numPos=counts[1])
 		if (self.isHomogeneousSet(examples)):
-			return DecTreeNode(parentAttrib, parentAttribValue, True, [], examples[0][-1])
+			return DecTreeNode(parentAttrib, parentAttribValue, True, [], examples[0][-1],
+				numNeg=counts[0], numPos=counts[1])
 		#   are there fewer than m instances? OR
 		#   do all remaining features have negative information gain?
 		if len(examples) < m:
 			return DecTreeNode(parentAttrib, parentAttribValue, True, [], 
-				self.getMajorityLabel(examples))
+				self.getMajorityLabel(examples), numNeg=counts[0], numPos=counts[1])
 		if  (bestGain[1] <= 0):
 			return DecTreeNode(parentAttrib, parentAttribValue, True, [], 
-				self.getMajorityLabel(examples))
+				self.getMajorityLabel(examples), numNeg=counts[0], numPos=counts[1])
 		#   are there only numeric features with no candidate splits?
 		#      this should implicitly be checked when looking for bestGain
 		#   (if there aren't more splits, best gain returns as -inf)
@@ -56,9 +60,9 @@ class DecisionTree(object):
 		# If we've gotten this far, we're making an internal node
 		subAttribs = list(attributes) # copy the list
 		xInd = self.attributes.index(bestGain[0])
-		subtree = DecTreeNode(parentAttrib, parentAttribValue, False, [])
-		print bestGain
-		print len(examples)
+		subtree = DecTreeNode(parentAttrib, parentAttribValue, False, [], 
+			numNeg=counts[0], numPos=counts[1])
+		
 		# remove the current attrib from the list of attribs if its nominal
 		if len(bestGain) == 2:
 			subAttribs.remove(bestGain[0])
@@ -73,15 +77,28 @@ class DecisionTree(object):
 			exLess = [instance for instance in examples if instance[xInd] <= bestGain[2]]
 			subtree.addChild(self.buildTree(exLess, m, subAttribs, bestGain[0], ' <= %.6f' % bestGain[2]))
 			exGrtr = [instance for instance in examples if instance[xInd] > bestGain[2]]
-			subtree.addChild(self.buildTree(exGrtr, m, subAttribs, bestGain[0], ' <= %.6f' % bestGain[2]))
+			subtree.addChild(self.buildTree(exGrtr, m, subAttribs, bestGain[0], ' > %.6f' % bestGain[2]))
 		
 		return subtree
 
 
-#	def printNode(self, depth, node):
-#		line = ''
-#		line
 
+	def printNode(self, depth, node):
+		text = ''
+		text += depth*'|\t'
+		text += node.attribute
+		if (not '<' in node.parentAttribVal) and (not '>' in node.parentAttribVal):
+			text += ' = '
+		text += node.parentAttribVal
+		text += ' [' + str(node.numNeg) + ' ' + str(node.numPos) + ']'
+
+		if node.terminal:
+			text += ': ' + node.label
+			print text
+		else:
+			print text
+			for child in node.children:
+				self.printNode(depth+1, child)		
 
 
 
@@ -137,7 +154,6 @@ class DecisionTree(object):
 		the tuple has a 3rd field defining the split point
 		"""
 		best = (None, float("-inf"))
-		
 
 		# loop through each attribute and get best info gain
 		for attribute in attributes:
@@ -172,16 +188,8 @@ class DecisionTree(object):
 		"""
 		# find instances that are less than or equal to the split
 		x = self.attributes.index(attribute)
-		#print(len(instances[0]))
-		#print("x is: " + str(x))
-		#print("split is: " +str(split))
-		#print instances
 		lteInstances = [instance for instance in instances if instance[x] <= split]
 		gtInstances = [instance for instance in instances if instance[x] > split]
-		
-		#for instance in lteInstances:
-		#	print instance
-
 
 		# calculate conditional entropy
 		return (((float(len(lteInstances))/len(instances))*self.getEntropy(lteInstances)) + \
@@ -255,8 +263,14 @@ class DecisionTree(object):
 
 
 
-
-
+	def getNumOfEachLabel(self, instances):
+		counts = [0,0]
+		for instance in instances:
+			if instance[-1] == self.labels[0]:
+				counts[0] += 1
+			else:
+				counts[1] += 1
+		return counts
 
 
 

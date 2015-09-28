@@ -51,8 +51,6 @@ def readFile(fname):
 					newline.append(line[-1])
 					instances.append(newline[:])
 					
-
-
 		return Dataset(labels, attributes, attributeValues, instances)
 
 
@@ -76,17 +74,12 @@ def main(argv):
 	trainset = readFile(trainFile)
 	testset = readFile(testFile)
 
-
 	# test decision tree constructor
-	print m
 	a = DecisionTree(trainset, m)
 
-	
-	#print(a.attributes)
-	#print(a.attributeValues)
-	#print(a.m)
-	print(a.root.children)
-
+	#Print the tree
+	for child in a.root.children:
+		a.printNode(0, child)
 
 
 

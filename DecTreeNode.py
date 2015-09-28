@@ -3,7 +3,8 @@
 
 class DecTreeNode(object):
 
-	def __init__(self, attribute, parentAttribVal, terminal, children=[], label=None, split=None):
+	def __init__(self, attribute, parentAttribVal, terminal, children=[], label=None, split=None, numNeg=0,
+		numPos=0):
 		"""
 		attribute:       the name of the attribute being split at this node
 		parentAttribVal: the value of the attribute split at the parent node
@@ -19,6 +20,8 @@ class DecTreeNode(object):
 		self.children = children
 		self.label = label
 		self.split = split
+		self.numNeg = numNeg
+		self.numPos = numPos
 
 
 
