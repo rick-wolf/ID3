@@ -82,6 +82,20 @@ def main(argv):
 		a.printNode(0, child)
 
 
+	# Test set 
+	predictions = []
+	actual = []
+	for i in range(len(testset.instances)):
+		instance = testset.instances[i]
+		predictions.append(a.classify(instance, a.root))
+		actual.append(instance[-1])
+		print 'pred: ' + predictions[i] + ', actual: ' + instance[-1]
+		
+	scores = [1 if predictions[i] == actual[i] else 0 for i in range(len(testset.instances))]
+	print 'Number of correct classifications in test set: ' + str(sum(scores))
+	print 'Number of total test instances: ' + str(len(scores))
+
+
 
 
 

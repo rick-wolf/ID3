@@ -31,3 +31,7 @@ class DecTreeNode(object):
 		"""
 
 		self.children.append(child)
+
+
+	def setSplit(self, split):
+		self.split = split

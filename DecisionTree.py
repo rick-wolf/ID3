@@ -60,7 +60,7 @@ class DecisionTree(object):
 		# If we've gotten this far, we're making an internal node
 		subAttribs = list(attributes) # copy the list
 		xInd = self.attributes.index(bestGain[0])
-		subtree = DecTreeNode(parentAttrib, parentAttribValue, False, [], 
+		subtree = DecTreeNode(parentAttrib, parentAttribValue, False, [],  
 			numNeg=counts[0], numPos=counts[1])
 		
 		# remove the current attrib from the list of attribs if its nominal
@@ -72,6 +72,7 @@ class DecisionTree(object):
 				exOfVal = [instance for instance in examples if instance[xInd] == val]
 				subtree.addChild(self.buildTree(exOfVal, m, subAttribs, bestGain[0], val))
 		else:
+			subtree.setSplit(bestGain[2])
 			# make an internal node with a numeric attribute
 			# first do the less than or equal to
 			exLess = [instance for instance in examples if instance[xInd] <= bestGain[2]]
@@ -84,6 +85,9 @@ class DecisionTree(object):
 
 
 	def printNode(self, depth, node):
+		"""
+		recursively prints the tree in a text representation
+		"""
 		text = ''
 		text += depth*'|\t'
 		text += node.attribute
@@ -99,6 +103,36 @@ class DecisionTree(object):
 			print text
 			for child in node.children:
 				self.printNode(depth+1, child)		
+
+
+
+	def classify(self, instance, node):
+		"""
+		takes a list representing values of attributes for an instance and classifies
+		that instance by returning the string predicted value.
+		"""
+		label = node.label
+
+		line = ''
+
+		if not node.terminal:
+			nextAttrib = node.children[0].attribute
+
+			x = self.attributes.index(nextAttrib)
+
+			#line += nextAttrib + ' ' + str(x) + ' ' + str(instance[x])
+			#print line
+
+			# find the index of the child node that we need
+			#	If it is a numeric split
+			if len(self.attributeValues[nextAttrib]) == 1:
+				childInd = 0 if instance[x] <= node.split else 1
+			else:
+				childInd = self.attributeValues[nextAttrib].index(instance[x])
+			child = node.children[childInd]
+			return self.classify(instance, child)
+		else:
+			return label
 
 
 
