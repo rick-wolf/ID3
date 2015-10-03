@@ -15,6 +15,7 @@ from Dataset import Dataset
 from DecisionTree import DecisionTree
 from DecTreeNode import DecTreeNode
 import random
+import copy
 
 
 
@@ -78,12 +79,12 @@ def main(argv):
 	testset = readFile(testFile)
 
 	# test decision tree constructor
-	a = DecisionTree(trainset, m)
+	#a = DecisionTree(trainset, m)
 
 	
 	# prep a file for graphing data
 	f = open(outname, 'w+')
-	f.write('samplePercentage,accuracy,source\n')
+	f.write('samplePercentage,Accuracy,Min,Max\n')
 
 
 	# train using various sample sizes
@@ -99,28 +100,35 @@ def main(argv):
 
 		accuracies = []
 		for sample in samples:
+			# train using this sample
+			tmpTrain = copy.deepcopy(trainset)
+			tmpTrain.overrideInstances(sample)
+			tmpTree = DecisionTree(tmpTrain, m)
+
 			scores = []
-			for i in range(len(sample)):
-				instance = sample[i]
-				scores.append(1 if a.classify(instance, a.root) == instance[-1] else 0)
+			for instance in testset.instances:
+				scores.append(1 if tmpTree.classify(instance, tmpTree.root) == instance[-1] else 0)
 			accuracies.append(float(sum(scores))/len(scores))
 
 		# write the data to a file
-		avg = str(float(sum(accuracies))/len(accuracies))
-		mi  = str(min(accuracies))
-		ma  = str(max(accuracies))
-		f.write(str(samplePerc*100) + ',' + avg + ',Average\n')
-		f.write(str(samplePerc*100) + ',' + mi + ',Minimum\n')
-		f.write(str(samplePerc*100) + ',' + ma + ',Maximum\n')
+		avg = str((float(sum(accuracies))/len(accuracies))*100)
+		mi  = str((min(accuracies))*100)
+		ma  = str((max(accuracies))*100)
+		#f.write(str(samplePerc*100) + ',' + avg + ',Average\n')
+		#f.write(str(samplePerc*100) + ',' + mi + ',Minimum\n')
+		#f.write(str(samplePerc*100) + ',' + ma + ',Maximum\n')
+		f.write(str(samplePerc*100) + ',' + avg + ',' + mi + ',' + ma + '\n')
 
 	# do one more classification accuracy using the whole training set
 	scores = []
-	for instance in trainset.instances:
-		instance = sample[i]
+	a = DecisionTree(trainset, m)
+	for instance in testset.instances:
 		scores.append(1 if a.classify(instance, a.root) == instance[-1] else 0)
-	f.write('100,' + str(float(sum(scores))/len(scores)) + ',Average\n')
-	f.write('100,' + str(float(sum(scores))/len(scores)) + ',Minimum\n')
-	f.write('100,' + str(float(sum(scores))/len(scores)) + ',Maximum\n')
+	avg = str((float(sum(scores))/len(scores))*100)
+	#f.write('100,' + str((float(sum(scores))/len(scores))*100) + ',Average\n')
+	#f.write('100,' + str((float(sum(scores))/len(scores))*100) + ',Minimum\n')
+	#f.write('100,' + str((float(sum(scores))/len(scores))*100) + ',Maximum\n')
+	f.write('100,' + avg + ',' + avg + ',' + avg + '\n')
 
 
 

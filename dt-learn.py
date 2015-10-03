@@ -81,7 +81,7 @@ def main(argv):
 	for child in a.root.children:
 		a.printNode(0, child)
 
-
+	print "<Predictions for the Test Set Instances>"
 	# Test set 
 	predictions = []
 	actual = []
@@ -89,11 +89,12 @@ def main(argv):
 		instance = testset.instances[i]
 		predictions.append(a.classify(instance, a.root))
 		actual.append(instance[-1])
-		print 'pred: ' + predictions[i] + ', actual: ' + instance[-1]
-		
+		#print 'pred: ' + predictions[i] + ', actual: ' + instance[-1]
+		print str(i+1) + ': '+ 'Actual: ' + instance[-1] + "  Predicted: " + predictions[i]
+
 	scores = [1 if predictions[i] == actual[i] else 0 for i in range(len(testset.instances))]
-	print 'Number of correct classifications in test set: ' + str(sum(scores))
-	print 'Number of total test instances: ' + str(len(scores))
+	print 'Number of correctly classified: ' + str(sum(scores)) + \
+	'  Total number of test instances: ' + str(len(scores))
 
 
 

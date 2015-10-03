@@ -35,6 +35,8 @@ class Dataset(object):
 		self.instances = instances
 
 
+	def overrideInstances(self, instances):
+		self.instances = instances
 
 	
 
